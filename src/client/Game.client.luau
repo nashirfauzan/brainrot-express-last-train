@@ -1,3 +1,4 @@
+-- Render the player HUD and send input requests to the authoritative server.
 local Players=game:GetService('Players')
 local Rep=game:GetService('ReplicatedStorage')
 local UIS=game:GetService('UserInputService')

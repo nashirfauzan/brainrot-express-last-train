@@ -4,6 +4,8 @@ package-lock.json
 npm-shrinkwrap.json
 /out/
 /coverage/
+/.verify/
+.cache/
 *.rbxl.lock
 *.rbxlx.lock
 *.log

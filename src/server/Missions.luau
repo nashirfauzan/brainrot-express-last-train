@@ -1,3 +1,4 @@
+-- Bind station prompts and player mission attributes to contract state.
 local Contracts=require(script.Parent.Contracts)
 local Station=require(script.Parent.Station)
 local M={}

@@ -28,8 +28,8 @@ main.ts copies game.rbxl, PLAY.json, src/ and screenshots/ and writes dossier.js
 
 ## Provenance and remaining verification
 
-Game source, binary and screenshots were inherited from earlier agent sessions before this repository's new recording; they are not claimed as newly authored here. Earlier sealed recordings must be accepted for this repository before witnessed authorship can be claimed. The official starter retains its original attribution.
+Game source, binary and screenshots were inherited from earlier agent sessions before this recording. This final pass documents every game module, corrects the screenshot tour, excludes development debris from Rojo, and makes packaging reject stale output and invalid screenshot sets. These changes do not establish original authorship of inherited lines; acceptance of earlier provenance remains a separate gate. The official starter retains its attribution.
 
-Automated tests cover economy and contract behavior and compile Luau; they do not replace Studio play-tests. In this recording all nine Luau scripts compiled, the behavior assertions and seven source regressions passed, and two fresh packaging runs produced identical SHA-256 hashes for all 15 output files. The vendored library matches the official starter byte for byte.
+Automated tests compile all nine Luau scripts and exercise economy and contract behavior. The runner also executes tests/manifest.luau to check bank preservation at departure. Structural regressions check seven integration seams. These checks do not replace Studio play-tests.
 
-Departure and rebirth on the exact final live build remain pending. The live service announced kit level 23 during this session; use the refreshed kit for further intake checks. The CLI documents keypair signing but no API-credential signer. The existing keypair is deliberately untouched, and no submission is claimed.
+Departure and rebirth on the exact final live build remain pending. This pass does not publish or submit. PLAY.json preserves the existing place and universe IDs; its link does not assert that the newly rebuilt local artifact is live. Packaging requires a fresh output directory and includes only game.rbxl, PLAY.json, src/, the three reviewed screenshots and dossier.json. The art/ icon and development tests remain outside the output.

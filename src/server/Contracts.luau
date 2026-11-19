@@ -6,6 +6,7 @@ function C.accept(index,stop)
  return {kind=kind,stop=stop,title=titles[kind],stage=0,reward=250+kind*100,target=1,done=false}
 end
 function C.act(a,event,stop,id)
+ -- Reject stale and paid contracts before any event can advance their stage.
  if not a or a.done or a.stop~=stop then return false end
  if a.kind==1 or a.kind==2 then
   local pickup=a.kind==1 and 'parcel' or 'passenger'

@@ -10,4 +10,6 @@ const checks=[
  ['delivery state machine exists',()=>assert.ok(fs.existsSync(new URL('../src/server/Contracts.luau',import.meta.url)))],
  ['per-stop replenishment',()=>assert.match(read('src/server/World.luau'),/function W.replenish/)],
 ];
-let failed=0;for(const [name,fn]of checks){try{fn();console.log('PASS',name)}catch(e){failed++;console.log('FAIL',name,e.message.split('\n')[0])}}process.exitCode=failed?1:0;
+let failed=0;for(const [name,fn]of checks){try{fn();console.log('PASS',name)}catch(e){failed++;console.error('FAIL',name,e.message)}}
+console.log(`${checks.length-failed}/${checks.length} structural checks passed`);
+process.exitCode=failed?1:0;

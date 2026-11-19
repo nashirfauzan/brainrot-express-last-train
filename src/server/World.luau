@@ -1,3 +1,4 @@
+-- Build the train and connect catch and cargo prompts to server callbacks.
 local W={}
 local Rep=game:GetService('ReplicatedStorage')
 local Catalog=require(Rep.Shared.Catalog)

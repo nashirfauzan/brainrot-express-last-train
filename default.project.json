@@ -1,5 +1,6 @@
 {
   "name": "brainrot-express",
+  "globIgnorePaths": ["**/.*/**", "**/node_modules/**", "**/Thumbs.db", "**/*.rbxl.lock"],
   "tree": {
     "$className": "DataModel",
     "Players": {

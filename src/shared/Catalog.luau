@@ -1,3 +1,4 @@
+-- Species IDs are positional; keep the name, rarity, income and flavor tuple stable.
 local C = {items={
  {"Kulkasaurus","Common",5,"Fridge dinosaur"},{"Bebek Jetpack","Common",6,"Rocket duck"},{"Sate Satelit","Common",7,"Orbital skewer"},{"Capybara Kondektur","Common",8,"Tiny ticket inspector"},
  {"Roti Komodo","Uncommon",13,"Bread lizard"},{"Bakso UFO","Uncommon",15,"Flying meatball"},{"Pisang Beroda","Uncommon",17,"Wheelie banana"},{"Gurita WiFi","Uncommon",19,"Router octopus"},

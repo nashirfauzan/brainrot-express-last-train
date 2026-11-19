@@ -1,3 +1,4 @@
+-- Keep carry, bank and upgrade accounting independent of Roblox instances.
 local E = {}
 function E.new()
  return {cash=0, carry={}, bank={}, Bag=0, Boots=0, Racks=0, rebirth=0}

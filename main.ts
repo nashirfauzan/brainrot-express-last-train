@@ -9,7 +9,7 @@
 // Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { copyFileSync, cpSync, lstatSync, mkdirSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, lstatSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-roblox.ts';
@@ -21,12 +21,24 @@ const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 const notDotted = (path: string): boolean => {
   const name = basename(path);
   if (name.startsWith('.')) return false;
+  if (name === 'node_modules' || name === 'Thumbs.db' || name.endsWith('.lock')) return false;
   if (!/^[A-Za-z0-9_][A-Za-z0-9._-]*$/.test(name)) throw new Error(`Unsafe artifact name: ${name}`);
   if (lstatSync(path).isSymbolicLink()) throw new Error(`Symbolic link refused: ${name}`);
   return true;
 };
 
 mkdirSync(out, { recursive: true });
+// Stale artifacts would change the dossier; require a fresh output every run.
+if (readdirSync(out).length) throw new Error('Output directory must be empty');
+const shots = ['1-start.jpg', '2-play.jpg', '3-cargo.jpg'];
+if (JSON.stringify(readdirSync(join(here, 'screenshots')).sort()) !== JSON.stringify(shots)) {
+  throw new Error('Expected exactly the three reviewed JPEG screenshots');
+}
+for (const name of ['game.rbxl', 'PLAY.json', ...shots.map(s => `screenshots/${s}`)]) {
+  const stat = lstatSync(join(here, name));
+  if (!stat.isFile()) throw new Error(`Expected regular file: ${name}`);
+  if (name.endsWith('.jpg') && stat.size > 262144) throw new Error(`Screenshot too large: ${name}`);
+}
 copyFileSync(join(here, 'game.rbxl'), join(out, 'game.rbxl'));
 copyFileSync(join(here, 'PLAY.json'), join(out, 'PLAY.json'));
 cpSync(join(here, 'src'), join(out, 'src'), { recursive: true, filter: notDotted });

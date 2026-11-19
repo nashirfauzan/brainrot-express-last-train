@@ -1,3 +1,4 @@
+-- Verify that departure discards carried cargo but preserves the bank.
 return function(E)
  local s = E.new()
  local cargo = {id=1, mutation=1, rate=8}

@@ -1,3 +1,4 @@
+-- Bind player lifecycle and server actions to the world and departure cycle.
 local Players=game:GetService('Players')
 local Rep=game:GetService('ReplicatedStorage')
 local DSS=game:GetService('DataStoreService')

@@ -1,3 +1,4 @@
+-- Share the station palette and construction primitives with the train builder.
 local S={}
 local V=Vector3.new
 local rgb=Color3.fromRGB

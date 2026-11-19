@@ -3,11 +3,13 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 const {LuauState}=await import(process.env.LUAU_WEB_MODULE || pathToFileURL('C:/Users/USER/AppData/Local/hermes/cache/scratch/brainrot-tools/node_modules/luau-web/src/index.js').href);
 const state=await LuauState.createAsync({print:console.log});
-const files=fs.readdirSync('src',{recursive:true}).filter(p=>p.endsWith('.luau'));
+const files=fs.readdirSync('src',{recursive:true}).filter(p=>p.endsWith('.luau')).sort();
 for(const file of files){state.loadstring(fs.readFileSync(path.join('src',file),'utf8'),file,true);console.log('COMPILE PASS',file)}
 const module=p=>`(function()\n${fs.readFileSync(p,'utf8')}\nend)()`;
 const source=`local E=${module('src/server/Economy.luau')}
 local C=${module('src/server/Contracts.luau')}
+local manifest=${module('tests/manifest.luau')}
+manifest(E)
 local s=E.new()
 assert(not E.upgrade(s,'Bag'))
 assert(not E.rebirth(s))
@@ -35,4 +37,4 @@ local rescue=C.accept(1,1);assert(not C.act(rescue,'passenger',1));assert(C.act(
 local repair=C.accept(2,1);assert(C.act(repair,'repair',1));assert(not C.act(repair,'repair',1))
 print('BEHAVIOR PASS: capacity, unsecured income, banking, upgrade prices, invalid upgrade, rebirth threshold/reset/multiplier, loss, delivery sequence, once-only reward, expiry, species target, escort, repair')
 return true`;
-await state.loadstring(source,'behavior',true)();state.destroy();
+try { await state.loadstring(source,'behavior',true)(); } finally { state.destroy(); }

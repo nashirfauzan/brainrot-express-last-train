@@ -1,3 +1,4 @@
+-- Construct the physical species models from the shared catalog IDs.
 local M={}
 local C=require(script.Parent.Catalog)
 local V=Vector3.new
