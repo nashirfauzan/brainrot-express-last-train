@@ -1,21 +1,4 @@
-# Local dependencies and generated verification outputs
 node_modules/
-package-lock.json
-npm-shrinkwrap.json
-/out/
-/coverage/
-/.verify/
-.cache/
-*.rbxl.lock
-*.rbxlx.lock
-*.log
-# Local secrets and tooling configuration
-.env
-.env.*
-*.keypair.json
-wallet.json
-.mcp.json
-# OS/editor debris
-.DS_Store
-Thumbs.db
-.vscode/
+*.lock
+out/
+.verify/
