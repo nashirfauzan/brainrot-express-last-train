@@ -1,98 +1,90 @@
 local World = {}
-local V = Vector3.new
-local C = Color3.fromHex
+local v = Vector3.new
 function World.build()
-    local yard = Instance.new("Folder", workspace)
-    yard.Name = "ExpressTerminal"
-    local function block(name,x,y,z,sx,sy,sz,color,material)
-        local p = Instance.new("Part")
-        p.Name, p.Position, p.Size, p.Color = name,V(x,y,z),V(sx,sy,sz),C(color)
-        p.Anchored, p.Material = true, material or Enum.Material.SmoothPlastic
-        p.Parent = yard
-        return p
-    end
-    local neon = Enum.Material.Neon
-    local function board(name,x,y,z,width,height,text)
-        local p = block(name,x,y,z,width,height,.45,"171E34")
-        local gui = Instance.new("SurfaceGui",p)
-        gui.Face, gui.CanvasSize = Enum.NormalId.Back,Vector2.new(900,math.floor(900*height/width))
-        local label = Instance.new("TextLabel",gui)
-        label.Size, label.BackgroundTransparency = UDim2.fromScale(1,1),1
-        label.Font, label.Text, label.TextColor3, label.TextScaled = Enum.Font.GothamBold,text,C("FFE285"),true
-        return p
-    end
-    block("Platform",0,19,0,76,2,32,"384565",Enum.Material.Slate)
-    block("Foundation",0,17.5,0,74,1,30,"232B46")
-    block("Safety stripe",0,20.025,-14,75,.05,.38,"FFCF4C",neon)
-    block("Track bed",0,17.7,-25,76,1,14,"232B40")
-    for x=-36,36,3 do block("Sleeper",x,18.35,-25,1.1,.36,11,"684659",Enum.Material.Wood) end
-    for _,z in {-28,-22} do block("Rail",0,18.7,z,76,.35,.38,"B7C9DD",Enum.Material.Metal) end
-    for i,color in {"36BB83","9953DE","DFAD40","42A9E8","A85B54"} do
-        local x = (i-3)*14
-        block("Counter",x,21.3,10,10,2.6,2.2,color)
-        block("Countertop",x,22.65,10,10.7,.22,2.6,"F0D5AF")
-        for _,dx in {-4.7,4.7} do
-            for _,z in {7,13} do block("Canopy post",x+dx,22.5,z,.3,5,.3,"2E253A") end
-        end
-        for j=-5,5 do
-            local p = block("Canvas stripe",x+j,25,10,1,.26,7.4,j%2==0 and color or "FFF1D2")
-            p.CFrame *= CFrame.Angles(math.rad(8),0,0)
-        end
-        for j=-1,1 do block("Parcel",x+j*2,23.12,10,1.15,.7,1,color,Enum.Material.Wood) end
-    end
-    for x=-34,34,17 do
-        block("Lamp",x,23.1,-11,.27,6.2,.27,"252C43",Enum.Material.Metal)
-        local globe = block("Globe",x,26.35,-11,1.2,1.2,1.2,"FFFAEB",neon)
-        globe.Shape = Enum.PartType.Ball
-        local light = Instance.new("PointLight",globe)
-        light.Range,light.Brightness,light.Color = 19,1.6,C("FFE1B0")
-    end
-    for _,x in {-37.6,37.6} do
-        for z=-12,12,6 do block("Railing post",x,21.5,z,.25,3,.25,"B5B9DA") end
-        for y=21,23 do block("Railing",x,y,0,.25,.16,26,"B5B9DA") end
-    end
-    for x=-36,36,6 do block("Back railing post",x,21.3,15.7,.2,2.6,.2,"939FBA") end
-    block("Back railing",0,22.5,15.7,75,.22,.28,"939FBA")
-    block("Sign gantry",0,25.2,14,21,10.4,.5,"222C47")
-    local title = board("Title",0,29,13.65,26,3.4,"BRAINROT EXPRESS")
-    title.SurfaceGui.Face = Enum.NormalId.Front
-    local departures = board("Departures",30,24,-6,8,4.5,"DEPARTURES
-ALL ABOARD
-THE EXPRESS")
-    departures.CFrame *= CFrame.Angles(0,math.rad(-18),0)
-    for i,color in {"C8495C","177F80","5A548E"} do
-        local x = (i-2)*23
-        block("Wagon deck",x,19.6,-25,21,.8,9,color)
-        block("Gold trim",x,19.6,-29.55,21,.2,.16,"EDBF64")
-        for _,dx in {-7,7} do
-            for _,z in {-28,-22} do
-                local wheel = block("Wheel",x+dx,18.9,z,.42,2.2,2.2,"1C2337",Enum.Material.Metal)
-                wheel.Shape = Enum.PartType.Cylinder
-                wheel.CFrame *= CFrame.Angles(0,math.pi/2,0)
-            end
-        end
-    end
-    block("Locomotive hood",-24,21.8,-25,16,3.6,7,"B73D59",Enum.Material.Metal)
-    block("Cab",-16,23,-25,5.5,6,7.4,"7C2E48")
-    block("Cab window",-16,24.2,-28.75,3.8,1.7,.12,"9DDDE5",neon)
-    block("Beacon",-16,26.28,-25,1,.55,1,"FFAE51",neon)
-    block("Bridge",0,19.82,-18.45,8,.36,4.2,"9B7B5D",Enum.Material.WoodPlanks)
-    for _,x in {-4.05,4.05} do block("Bridge edge",x,20.15,-18.4,.18,.32,4.2,"FFC34F") end
-    local podium = block("Deposit",0,20.75,-22.1,2,1.5,1.7,"236462")
-    block("Podium glow",0,21.56,-22.1,2.1,.16,1.8,"5FFFD0",neon)
-    block("Display shelf",0,20.32,-26.5,18,.64,4.8,"233D50")
-    block("Display strip",0,20.48,-24.05,18,.11,.12,"61F0CF",neon)
-    for _,x in {17,23,29} do block("Cargo",x,21.25,-25,4.2,2.5,5.5,"8B72AD",Enum.Material.WoodPlanks) end
-    local spawn = Instance.new("SpawnLocation")
-    spawn.Name,spawn.Anchored,spawn.Neutral,spawn.Duration = "PlatformSpawn",true,true,0
-    spawn.Size,spawn.Transparency,spawn.CanCollide = V(5,.2,5),1,false
-    spawn.CFrame = CFrame.lookAt(V(-25,20.15,-4),V(10,20.15,9))
-    spawn.Parent = yard
-    local lighting = game:GetService("Lighting")
-    lighting.ClockTime,lighting.Brightness = 17.1,2.7
-    lighting.Ambient,lighting.OutdoorAmbient = C("8480A5"),C("A9A8C7")
-    local atmosphere = Instance.new("Atmosphere",lighting)
-    atmosphere.Density,atmosphere.Color,atmosphere.Decay = .26,C("CED4FF"),C("F6B18B")
-    return yard,podium,spawn
+	local root = Instance.new("Folder")
+	root.Name,root.Parent = "Express",workspace
+	local function part(name,size,pos,color,material)
+		local p = Instance.new("Part")
+		p.Name,p.Size,p.Position,p.Color = name,size,pos,Color3.fromHex(color)
+		p.Anchored,p.Material,p.Parent = true,material or Enum.Material.SmoothPlastic,root
+		return p
+	end
+	local function sign(text,size,pos,color)
+		local p = part("Sign",size,pos,color)
+		local g = Instance.new("SurfaceGui")
+		g.Face,g.PixelsPerStud,g.SizingMode,g.Parent = Enum.NormalId.Front,40,Enum.SurfaceGuiSizingMode.PixelsPerStud,p
+		local t = Instance.new("TextLabel")
+		t.Size,t.BackgroundTransparency,t.Text,t.TextColor3 = UDim2.fromScale(1,1),1,text,Color3.fromHex("fff3bc")
+		t.Font,t.TextScaled,t.Parent = Enum.Font.GothamBlack,true,g
+	end
+	part("Platform",v(90,2,46),v(0,-1,0),"52667d")
+	part("PlatformTrim",v(92,.5,48),v(0,-2,0),"f7bb55")
+	part("SafetyLine",v(88,.04,.35),v(0,.04,19),"ffdb4c",Enum.Material.Neon)
+	for x=-44,44,4 do
+		part("Sleeper",v(1,.45,13),v(x,-1,33),"6b4c42",Enum.Material.Wood)
+	end
+	for _,z in {29,37} do part("Rail",v(96,.5,.45),v(0,-.5,z),"b8cce0",Enum.Material.Metal) end
+	for x=-42,42,7 do
+		part("RailingPost",v(.25,3,.25),v(x,1.5,-22),"cce6e8")
+	end
+	part("BackRail",v(88,.25,.25),v(0,3,-22),"cce6e8")
+	local colors = {"49bd88","9766dc","e9b94b","4eace4","a65a4c"}
+	for i,c in colors do
+		local x = (i-3)*16
+		part("StallCounter",v(12,3,5),v(x,1.5,-15),c)
+		for _,dx in {-5.5,5.5} do part("StallPost",v(.3,8,.3),v(x+dx,4,-16),"fff3d4") end
+		for j=1,8 do part("CanopyStripe",v(1.6,.4,8),v(x+(j-4.5)*1.6,8,-15),if j%2==0 then c else "fff1d2") end
+		sign(({"ODDITIES","RARE FINDS","GOLD RUSH","DEEP FRIED","MYTHIC CLUB"})[i],v(11,1.4,.3),v(x,5,-12),c)
+	end
+	for _,x in {-40,-20,20,40} do
+		part("LampPost",v(.35,9,.35),v(x,4.5,15),"23334d")
+		local globe = part("Globe",v(1.6,1.6,1.6),v(x,9.2,15),"ffffff",Enum.Material.Neon)
+		globe.Shape = Enum.PartType.Ball
+		local light = Instance.new("PointLight")
+		light.Range,light.Brightness,light.Parent = 18,1.5,globe
+	end
+	sign("BRAINROT EXPRESS",v(47,5,.7),v(0,14,-21),"182840")
+	for _,x in {-23,23} do part("SignPillar",v(.5,14,.5),v(x,7,-21),"f3c259") end
+	sign("DEPARTURES  /  ALL ABOARD  /  THE EXPRESS",v(29,2,.5),v(0,10,19),"17293d")
+	for i,x in {-28,0,28} do
+		part("WagonDeck",v(25,1,12),v(x,1,33),"263f59")
+		part("WagonTrim",v(25,.3,12.3),v(x,1.7,33),"efb947")
+		for _,dx in {-8,8} do
+			for _,z in {27,39} do
+				local wheel = part("Wheel",v(3,3,1),v(x+dx,-.15,z),"172330",Enum.Material.Metal)
+				wheel.Shape = Enum.PartType.Cylinder
+				wheel.Orientation = v(0,90,0)
+			end
+		end
+		if i==1 then
+			part("Engine",v(12,5,8),v(x-3,4,33),"32958d")
+			part("Cab",v(7,8,10),v(x+6,5.5,33),"d5624c")
+			part("Window",v(5,3,.2),v(x+6,7,27.9),"a7ebff",Enum.Material.Neon)
+			part("Chimney",v(2,4,2),v(x-7,8,33),"23334d")
+			local beacon = part("Beacon",v(1.5,1.5,1.5),v(x+6,10.2,33),"ffbf42",Enum.Material.Neon)
+			beacon.Shape = Enum.PartType.Ball
+		elseif i==3 then
+			for j=1,4 do part("CargoCrate",v(4,4,6),v(x-9+j*4,4,34),"b88b54",Enum.Material.WoodPlanks) end
+		end
+	end
+	part("BoardingBridge",v(10,.5,10),v(0,1,23),"b3c5c6")
+	local podium = part("DepositPodium",v(4,1.5,3),v(0,2.7,29),"55ffd1",Enum.Material.Neon)
+	part("CollectionShelf",v(22,.5,5),v(0,3,35),"f6d58a")
+	sign("YOUR WAGON  /  BANK TO EARN",v(22,1.5,.3),v(0,6,39),"246e70")
+	local spawn = Instance.new("SpawnLocation")
+	spawn.Name,spawn.Size,spawn.CFrame = "StationSpawn",v(4,.2,4),CFrame.lookAt(v(0,.2,8),v(0,.2,-12))
+	spawn.Anchored,spawn.Transparency,spawn.Neutral,spawn.Parent = true,1,true,root
+	game:GetService("Lighting").ClockTime = 15
+	game:GetService("Lighting").Ambient = Color3.fromRGB(145,160,190)
+
+	World.root,World.podium = root,podium
+	return World
+end
+function World.onTrain(player)
+	local r = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	return r ~= nil and r.Position.Z > 26 and r.Position.Z < 40 and math.abs(r.Position.X)<42
+end
+function World.slot(index, lane)
+	return CFrame.new(-8+((index-1)%3)*8,3.3+(math.floor((index-1)/3))*4.5,35+(lane or 0))
 end
 return World
