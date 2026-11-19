@@ -9,6 +9,7 @@ function Economy.add(player)
 	Economy.states[player] = s
 	return s
 end
+-- Only banked creatures contribute income; carried creatures are not yet earning.
 function Economy.rate(s)
 	local rate = 0
 	for _,item in s.banked do rate += item.data.rate end
@@ -17,6 +18,7 @@ end
 function Economy.costs(s)
 	return {bag=25*s.capacity*s.capacity,boots=40+20*(s.speed-16),rebirth=1000*(s.rebirths+1)}
 end
+-- Reapply the stored speed when a character is available, including after respawn.
 function Economy.apply(player)
 	local s = Economy.states[player]
 	local h = player.Character and player.Character:FindFirstChildOfClass("Humanoid")

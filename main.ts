@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-roblox.ts';
 import { imageInfo } from './tests/image-info.mjs';
 
+// Resolve inputs beside this module, independently of the caller's working directory.
 const here = fileURLToPath(new URL('.', import.meta.url));
 const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 const manifest = JSON.parse(readFileSync(join(here, 'PLAY.json'), 'utf8')) as { url: string; place_id: number; universe_id: number };
@@ -26,6 +27,7 @@ for (const entry of captures) {
 mkdirSync(out, { recursive: true });
 for (const file of ['game.rbxl', 'PLAY.json']) copyFileSync(join(here, file), join(out, file));
 for (const dir of ['src', 'screenshots']) cpSync(join(here, dir), join(out, dir), { recursive: true, filter });
+// Build the dossier from the copied payload so validation describes the deliverable.
 writeFileSync(join(out, 'dossier.json'), buildDossier(out, {
   text_max_bytes: 65536, screenshots: { max: 4, max_bytes: 262144 },
   max_instances: 500000, scripts_max_source_bytes: 8388608, scripts_max_path_chars: 1048576,

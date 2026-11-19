@@ -1,9 +1,13 @@
 {
+  "$schema": "https://rojo.space/schemas/project.json",
+  "$schema": "https://rojo.space/schemas/project.json",
   "name": "Brainrot Express",
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {"Shared": {"$path": "src/shared"}},
     "ServerScriptService": {"Server": {"$path": "src/server"}},
-    "StarterPlayer": {"StarterPlayerScripts": {"$path": "src/client"}}
+    "StarterPlayer": {
+      "StarterPlayerScripts": {"$path": "src/client"}
+    }
   }
 }

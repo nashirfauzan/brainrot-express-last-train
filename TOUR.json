@@ -1,1 +1,8 @@
-{"tour": 1, "steps": [{"screenshot": "1-start.jpg"}, {"screenshot": "2-play.jpg"}, {"screenshot": "3-cargo.jpg"}]}
+{
+  "tour": 1,
+  "steps": [
+    {"screenshot": "1-start.jpg"},
+    {"screenshot": "2-play.jpg"},
+    {"screenshot": "3-cargo.jpg"}
+  ]
+}

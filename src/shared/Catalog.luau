@@ -1,7 +1,9 @@
+-- Convert palette hex strings once when the shared catalog is loaded.
 local function creature(name, rarity, rate, color, body, head, eyes, eyeSize, style)
 	return {name = name, rarity = rarity, rate = rate, color = Color3.fromHex(color), body = body,
 		head = head, eyes = eyes, eyeSize = eyeSize, style = style}
 end
+-- Body and head vectors describe model dimensions, not world positions.
 local v = Vector3.new
 return {
 	creature("Skibidi Toilet", "Common", 1, "ceeaff", v(2.1,1.6,2.4), v(1.3,1.45,1.3), 2,.33,"bowl"),

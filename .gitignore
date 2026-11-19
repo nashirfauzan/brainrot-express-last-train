@@ -1,5 +1,8 @@
 node_modules/
+# Packaging output is generated from the tracked entry files.
 out/
 .verify/
 *.rbxl.lock
+# Studio XML place variants can create the same local lock sidecars.
+*.rbxlx.lock
 .DS_Store

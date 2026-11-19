@@ -13,6 +13,7 @@ function Models.build(d)
 	end
 	local b = part("Body", d.body, Vector3.new(0,d.body.Y/2,0), d.color, true)
 	m.PrimaryPart = b
+	-- Place the model pivot at the body's base for floor-aligned placement.
 	b.PivotOffset = CFrame.new(0,-d.body.Y/2,0)
 	local y = d.body.Y + d.head.Y/2 - .15
 	part("Head", d.head, Vector3.new(0,y,-.25),d.color:Lerp(Color3.new(1,1,1),.2),true)
@@ -31,6 +32,7 @@ function Models.build(d)
 	else
 		hat.Size = Vector3.new(.65,.9,.65)
 	end
+	-- Weld decorative parts to the body before callers unanchor the model.
 	for _,p in m:GetChildren() do
 		if p:IsA("BasePart") and p ~= b then
 			local weld = Instance.new("WeldConstraint")

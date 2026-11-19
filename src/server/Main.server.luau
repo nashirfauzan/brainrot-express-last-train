@@ -17,6 +17,7 @@ local function push(p)
 		capacity=s.capacity,speed=s.speed,hands=table.concat(hands,", "),costs=Economy.costs(s),
 		waveAt=Station.waveAt,departureAt=Station.departureAt,imminent=Station.imminent,message=s.message})
 end
+-- Validate ownership availability, capacity, and distance before changing cargo state.
 local function catch(p,item)
 	local s = Economy.states[p]
 	local r = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
@@ -46,6 +47,7 @@ local function spawnCreature(index,position)
 	prompt.Triggered:Connect(function(p) catch(p,item) end)
 	return item
 end
+-- Detach carried models before anchoring them into their earning collection slots.
 local function bank(p)
 	local s = Economy.states[p]
 	local r=p.Character and p.Character:FindFirstChild("HumanoidRootPart")

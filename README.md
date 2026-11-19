@@ -4,6 +4,8 @@ A 3D creature collection game on a railway platform in the sky. Catch wandering 
 
 Controls: WASD move, E catch, F deposit, 1 buy bag, 2 buy boots, 3 or R rebirth. HUD buttons are clickable.
 
+Carrying a creature does not generate income: deposit it at the glowing wagon podium to add it to the earning collection.
+
 Build: rojo build default.project.json --output game.rbxl
 Test: node tests/run-luau.mjs; open game.rbxl in Studio, press Play, catch and bank a creature, and verify cash increases.
 Play: https://www.roblox.com/games/135985390641801
@@ -17,6 +19,8 @@ Play: https://www.roblox.com/games/135985390641801
 - `TOUR.json` is an example of the optional tour: for each screenshot, the keys that bring the game to that screen.
 
 Run it as the grader does, writing `out/` in place of `/output`:
+
+Packaging validates the target play manifest and screenshot limits before copying the payload; it does not rebuild the place file.
 
     mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 

@@ -48,6 +48,7 @@ local key={[Enum.KeyCode.One]="bag",[Enum.KeyCode.Two]="boots",[Enum.KeyCode.Thr
 game:GetService("UserInputService").InputBegan:Connect(function(input,handled)
 	if not handled and key[input.KeyCode] then remote:FireServer(key[input.KeyCode]) end
 end)
+-- Retain the latest server snapshot while rendering countdowns between updates.
 local snapshot
 remote.OnClientEvent:Connect(function(s)
 	snapshot=s
@@ -66,4 +67,5 @@ game:GetService("RunService").RenderStepped:Connect(function()
 	wave.TextColor3=if w<=10 then Color3.fromHex("ff887c") else mint
 	meter.Size=UDim2.fromScale(math.clamp(d/90,0,1),1)
 end)
+-- Request initial state only after the event listener and HUD are ready.
 remote:FireServer("sync")

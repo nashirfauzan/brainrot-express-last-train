@@ -80,10 +80,12 @@ function World.build()
 	World.root,World.podium = root,podium
 	return World
 end
+-- Boarding uses the character root inside the train's rectangular footprint.
 function World.onTrain(player)
 	local r = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	return r ~= nil and r.Position.Z > 26 and r.Position.Z < 40 and math.abs(r.Position.X)<42
 end
+-- Slots fill three columns before stacking upward; lane offsets separate collections.
 function World.slot(index, lane)
 	return CFrame.new(-8+((index-1)%3)*8,3.3+(math.floor((index-1)/3))*4.5,35+(lane or 0))
 end

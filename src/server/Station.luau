@@ -2,6 +2,7 @@ local Station = {}
 local TICK_SECONDS = 0.5
 local IMMINENT_SECONDS = 10
 local WAVE_SECONDS, DEPARTURE_SECONDS = 45,90
+-- Server-clock deadlines also provide a shared time base for client countdowns.
 function Station.start(economy,world,push)
 	Station.waveAt = workspace:GetServerTimeNow()+WAVE_SECONDS
 	Station.departureAt = workspace:GetServerTimeNow()+DEPARTURE_SECONDS
@@ -16,6 +17,7 @@ function Station.start(economy,world,push)
 						s.carried={} s.message="WAVE! Your loose cargo was swept away. Banked cargo is safe."
 					end
 				end
+				-- The visual wave is non-colliding; cargo loss is resolved above on the server.
 				local wave = Instance.new("Part")
 				wave.Name,wave.Size,wave.Position = "SkyWave",Vector3.new(94,5,2),Vector3.new(0,2,-24)
 				wave.Anchored,wave.CanCollide,wave.Material,wave.Transparency = true,false,Enum.Material.Neon,.45
