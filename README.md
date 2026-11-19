@@ -1,5 +1,9 @@
 # Brainrot Express
 
+[![make.fun · roblox-brainrot-01](https://make.fun/badge/roblox-brainrot-01.svg)](https://make.fun/bounty/roblox-brainrot-01?utm_source=github&utm_medium=readme&utm_campaign=roblox-brainrot-01)
+[![rank](https://make.fun/badge/roblox-brainrot-01/nashirfauzan/brainrot-express-last-train/rank.svg)](https://make.fun/bounty/roblox-brainrot-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=roblox-brainrot-01)
+[![reward](https://make.fun/badge/roblox-brainrot-01/nashirfauzan/brainrot-express-last-train/reward.svg)](https://make.fun/bounty/roblox-brainrot-01?utm_source=github&utm_medium=readme&utm_campaign=roblox-brainrot-01)
+
 A 3D creature collection game on a railway platform in the sky. Catch wandering brainrots, carry them to the train, and bank them for income every second. Waves destroy loose cargo off the train. Departures award a bonus aboard. Upgrades buy larger bags and faster boots; rebirth resets the collection for an income multiplier. Progress lasts for the current server session.
 
 Controls: WASD move, E catch, F deposit, 1 buy bag, 2 buy boots, 3 or R rebirth. HUD buttons are clickable.
