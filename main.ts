@@ -1,39 +1,46 @@
-// A working roblox-brainrot-01 entry (Node 22, standard library only): the game is this directory's Rojo
-// project, built into game.rbxl with `rojo build default.project.json --output game.rbxl`, and the program
-// hands it in. It copies game.rbxl, src/, screenshots/ and PLAY.json from beside this file to /output and
-// writes /output/dossier.json, the summary the judge reads, with the vendored make.fun library. A starting
-// point, not a winner: it is a grey square that moves with the arrow keys. Build your game, rebuild
-// game.rbxl, put your PNG or JPEG screenshots in screenshots/ (the first by name is the cover, and one of
-// them is the thumbnail you upload for your game on Roblox) and fill in PLAY.json with your published place.
-//
-// Every name under /output starts with a letter, a digit or _ and holds only letters, digits, . _ and -: the
-// grader fails an entry whose output holds any other, so a file such as .gitkeep or .DS_Store copied in fails it.
-// So src/ and screenshots/ are copied without any name that starts with a dot, at any depth.
-//
-// Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
-//   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
-
-import { copyFileSync, cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
-import { basename, join } from 'node:path';
+import { readFileSync, readdirSync, mkdirSync, copyFileSync, writeFileSync, lstatSync } from 'node:fs';
+import { resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isDeepStrictEqual } from 'node:util';
 import { buildDossier } from './vendor/makefun-roblox.ts';
+import { imageInfo } from './tests/image-info.mjs';
 
-const here = fileURLToPath(new URL('.', import.meta.url));
-const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
-
-/** cpSync's filter: leave out every file and directory whose name starts with a dot (.gitkeep, .DS_Store, .git). */
-const notDotted = (path: string): boolean => !basename(path).startsWith('.');
-
-copyFileSync(join(here, 'game.rbxl'), join(out, 'game.rbxl'));
-copyFileSync(join(here, 'PLAY.json'), join(out, 'PLAY.json'));
-cpSync(join(here, 'src'), join(out, 'src'), { recursive: true, filter: notDotted });
-mkdirSync(join(out, 'screenshots'), { recursive: true });
-if (existsSync(join(here, 'screenshots'))) cpSync(join(here, 'screenshots'), join(out, 'screenshots'), { recursive: true, filter: notDotted });
-
-// The scorer's own caps (reference/gate.json): only text_max_bytes shapes the bytes; the others refuse an entry the
-// scorer would refuse (more than 4 screenshots or one over 256 KiB; a place of more than 500000 instances, whose
-// scripts' sources come to over 8 MiB or whose scripts' paths come to over 1048576 characters, in all).
-writeFileSync(
-  join(out, 'dossier.json'),
-  buildDossier(out, { text_max_bytes: 65536, screenshots: { max: 4, max_bytes: 262144 }, max_instances: 500000, scripts_max_source_bytes: 8388608, scripts_max_path_chars: 1048576 }),
-);
+const root = fileURLToPath(new URL('.', import.meta.url));
+const output = resolve(process.env.MAKEFUN_OUTPUT_DIR ?? '/output');
+const expected = { url: 'https://www.roblox.com/games/135985390641801', place_id: 135985390641801, universe_id: 10777563112 };
+// Reject a different place, extra metadata, or a mismatched play link before copying any files.
+if (!isDeepStrictEqual(JSON.parse(readFileSync(join(root,'PLAY.json'),'utf8')), expected)) throw new Error('PLAY.json is not the required published destination');
+if (output === resolve(root)) throw new Error('Output cannot replace the source repository');
+// Dotfiles never reach the submission; other unsafe names and symlinks are refused, not silently renamed.
+function entries(directory: string): string[] {
+  return readdirSync(directory).filter(name => !name.startsWith('.')).sort().map(name => {
+    if (!/^[A-Za-z0-9_.-]+$/.test(name)) throw new Error(`Unsafe entry name: ${name}`);
+    return name;
+  });
+}
+const images = entries(join(root,'screenshots'));
+if (images.length < 3 || images.length > 4) throw new Error('Need three or four screenshots');
+for (const name of images) {
+  if (!/\.(png|jpe?g)$/i.test(name)) throw new Error(`Not an image: ${name}`);
+  if (!lstatSync(join(root,'screenshots',name)).isFile() || lstatSync(join(root,'screenshots',name)).isSymbolicLink()) throw new Error(`Screenshot must be a regular file: ${name}`);
+  const info = imageInfo(join(root,'screenshots',name));
+  // Header dimensions guard the judge's image budget; byte cap guards upload and dossier size.
+  if (info.bytes > 262144 || Math.max(info.width,info.height)>1280 || Math.min(info.width,info.height)<480) throw new Error(`Screenshot outside caps: ${name}`);
+}
+function copy(source: string, destination: string): void {
+  const stat = lstatSync(source);
+  if (stat.isSymbolicLink()) throw new Error(`Symlink rejected: ${source}`);
+  if (stat.isDirectory()) {
+    mkdirSync(destination,{recursive:true});
+    for (const name of entries(source)) copy(join(source,name),join(destination,name));
+  } else if (stat.isFile()) copyFileSync(source,destination);
+  else throw new Error(`Unsupported file type: ${source}`);
+}
+mkdirSync(output,{recursive:true});
+for (const name of ['game.rbxl','PLAY.json','src','screenshots']) copy(join(root,name),join(output,name));
+// Mirror the bounty caps so an oversized place fails locally rather than at submission time.
+writeFileSync(join(output,'dossier.json'),buildDossier(output,{
+  text_max_bytes:65536, screenshots:{max:4,max_bytes:262144}, max_instances:500000,
+  scripts_max_source_bytes:8388608, scripts_max_path_chars:1048576,
+}));
+console.log(`PASS packaged game.rbxl, PLAY.json, src/, ${images.length} screenshots and dossier.json into ${output}`);

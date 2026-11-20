@@ -1,0 +1,11 @@
+node_modules/
+out/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.log
+*.rbxl.lock

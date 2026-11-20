@@ -1,1 +1,8 @@
-{"tour": 1, "steps": [{"screenshot": "1-start.png"}, {"screenshot": "2-play.png", "keys": ["Right"], "wait_ms": 1000}, {"screenshot": "3-end.png", "keys": ["Down"], "wait_ms": 1000}]}
+{
+  "tour": 1,
+  "steps": [
+    {"screenshot":"1-start.jpg","keys":[],"wait_ms":3000,"description":"Arrive at the sky station; inspect train and market."},
+    {"screenshot":"2-play.jpg","keys":["W","E"],"wait_ms":2000,"description":"Walk toward a creature and use E within the catch prompt."},
+    {"screenshot":"3-cargo.jpg","keys":["A","F"],"wait_ms":3000,"description":"Walk to the mint deposit podium and use F to secure cargo; watch banked income begin."}
+  ]
+}
