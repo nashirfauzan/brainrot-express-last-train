@@ -1,71 +1,88 @@
-local player=game:GetService("Players").LocalPlayer
-local remote=game:GetService("ReplicatedStorage"):WaitForChild("ExpressState")
-local gui=Instance.new("ScreenGui")
-gui.Name,gui.ResetOnSpawn,gui.Parent="ExpressHUD",false,player:WaitForChild("PlayerGui")
-local navy=Color3.fromHex("14283e")
-local gold=Color3.fromHex("ffd16b")
-local mint=Color3.fromHex("59edc4")
-local function box(class,parent,x,y,w,h,color)
-	local o=Instance.new(class)
-	o.Size,o.Position,o.BackgroundColor3=UDim2.fromOffset(w,h),UDim2.fromOffset(x,y),color
-	o.BorderSizePixel,o.Parent=0,parent
-	local corner=Instance.new("UICorner")
-	corner.CornerRadius,corner.Parent=UDim.new(0,8),o
-	return o
+-- A square that moves with the arrow keys inside a grey box.
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+
+local ARENA_WIDTH = 640
+local ARENA_HEIGHT = 480
+local SQUARE_SIZE = 48
+local SPEED = 320 -- pixels per second
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "GameGui"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+
+local background = Instance.new("Frame")
+background.Name = "Background"
+background.Size = UDim2.fromScale(1, 1)
+background.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+background.BorderSizePixel = 0
+background.Parent = gui
+
+local title = Instance.new("TextLabel")
+title.Name = "Hint"
+title.AnchorPoint = Vector2.new(0.5, 0)
+title.Position = UDim2.new(0.5, 0, 0.5, -ARENA_HEIGHT / 2 - 56)
+title.Size = UDim2.fromOffset(ARENA_WIDTH, 40)
+title.BackgroundTransparency = 1
+title.Text = "Use the arrow keys to move the square"
+title.TextColor3 = Color3.fromRGB(230, 230, 230)
+title.TextSize = 24
+title.Font = Enum.Font.SourceSans
+title.Parent = background
+
+local arena = Instance.new("Frame")
+arena.Name = "Arena"
+arena.AnchorPoint = Vector2.new(0.5, 0.5)
+arena.Position = UDim2.fromScale(0.5, 0.5)
+arena.Size = UDim2.fromOffset(ARENA_WIDTH, ARENA_HEIGHT)
+arena.BackgroundColor3 = Color3.fromRGB(110, 110, 110)
+arena.BorderColor3 = Color3.fromRGB(30, 30, 30)
+arena.BorderSizePixel = 2
+arena.Parent = background
+
+local square = Instance.new("Frame")
+square.Name = "Square"
+square.Size = UDim2.fromOffset(SQUARE_SIZE, SQUARE_SIZE)
+square.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+square.BorderColor3 = Color3.fromRGB(30, 30, 30)
+square.BorderSizePixel = 2
+square.Parent = arena
+
+-- The square's top-left corner inside the arena, starting in the middle.
+local x = (ARENA_WIDTH - SQUARE_SIZE) / 2
+local y = (ARENA_HEIGHT - SQUARE_SIZE) / 2
+
+local function place()
+	square.Position = UDim2.fromOffset(math.floor(x + 0.5), math.floor(y + 0.5))
 end
-local function text(parent,x,y,w,h,caption,color,size)
-	local l=box("TextLabel",parent,x,y,w,h,navy)
-	l.BackgroundTransparency,l.Text,l.TextColor3,l.TextSize=1,caption,color,size
-	l.Font,l.TextXAlignment=Enum.Font.GothamBold,Enum.TextXAlignment.Left
-	return l
-end
-local title=box("Frame",gui,20,18,286,148,navy)
-text(title,14,7,260,17,"SKY TERMINAL   //   PLATFORM 01",mint,12)
-text(title,14,25,270,28,"BRAINROT EXPRESS",gold,23)
-local cash=text(title,14,58,260,26,"$0  /  $0 per second",Color3.new(1,1,1),20)
-local stats=text(title,14,88,272,20,"Awaiting train manifest...",mint,14)
-local hands=text(title,14,110,258,30,"IN YOUR HANDS: Empty",gold,13)
-hands.TextTruncate=Enum.TextTruncate.AtEnd
-local clocks=box("Frame",gui,0,18,220,94,navy)
-clocks.AnchorPoint,clocks.Position=Vector2.new(1,0),UDim2.new(1,-20,0,18)
-local depart=text(clocks,14,9,195,23,"DEPARTURE",gold,16)
-local track=box("Frame",clocks,14,39,192,6,Color3.fromHex("35475b"))
-local meter=box("Frame",track,0,0,192,6,gold)
-local wave=text(clocks,14,53,192,24,"SKY WAVE",mint,16)
-local footer=box("Frame",gui,20,0,468,86,navy)
-footer.AnchorPoint,footer.Position=Vector2.new(0,1),UDim2.new(0,20,1,-18)
-local message=text(footer,12,5,445,25,"E Catch   /   F Bank",mint,13)
-message.TextTruncate=Enum.TextTruncate.AtEnd
-local buttons={}
-local names={bag="1  BAG +1",boots="2  BOOTS +4",rebirth="3  REBIRTH"}
-for i,k in {"bag","boots","rebirth"} do
-	local b=box("TextButton",footer,10+(i-1)*152,36,143,37,Color3.fromHex("284261"))
-	b.Text,b.Font,b.TextColor3,b.TextSize=names[k],Enum.Font.GothamBold,gold,13
-	b.Activated:Connect(function() remote:FireServer(k) end)
-	buttons[k]=b
-end
-local key={[Enum.KeyCode.One]="bag",[Enum.KeyCode.Two]="boots",[Enum.KeyCode.Three]="rebirth",[Enum.KeyCode.R]="rebirth"}
-game:GetService("UserInputService").InputBegan:Connect(function(input,handled)
-	if not handled and key[input.KeyCode] then remote:FireServer(key[input.KeyCode]) end
+
+place()
+gui.Parent = player:WaitForChild("PlayerGui")
+
+RunService.RenderStepped:Connect(function(dt)
+	local dx = 0
+	local dy = 0
+	if UserInputService:IsKeyDown(Enum.KeyCode.Left) then
+		dx -= 1
+	end
+	if UserInputService:IsKeyDown(Enum.KeyCode.Right) then
+		dx += 1
+	end
+	if UserInputService:IsKeyDown(Enum.KeyCode.Up) then
+		dy -= 1
+	end
+	if UserInputService:IsKeyDown(Enum.KeyCode.Down) then
+		dy += 1
+	end
+	if dx == 0 and dy == 0 then
+		return
+	end
+	x = math.clamp(x + dx * SPEED * dt, 0, ARENA_WIDTH - SQUARE_SIZE)
+	y = math.clamp(y + dy * SPEED * dt, 0, ARENA_HEIGHT - SQUARE_SIZE)
+	place()
 end)
--- Retain the latest server snapshot while rendering countdowns between updates.
-local snapshot
-remote.OnClientEvent:Connect(function(s)
-	snapshot=s
-	cash.Text=string.format("$%d   /   $%d/s   x%d",s.cash,s.income,s.multiplier)
-	stats.Text=string.format("BANKED %d     BAG %d     SPEED %d",s.banked,s.capacity,s.speed)
-	hands.Text="IN YOUR HANDS: "..(if s.hands=="" then "Empty" else s.hands)
-	message.Text=s.message
-	for k,b in buttons do b.Text=names[k].."  $"..s.costs[k] end
-end)
-game:GetService("RunService").RenderStepped:Connect(function()
-	if not snapshot or not snapshot.departureAt then return end
-	local now=workspace:GetServerTimeNow()
-	local d,w=math.max(0,snapshot.departureAt-now),math.max(0,snapshot.waveAt-now)
-	depart.Text=string.format("DEPARTURE   %02ds",math.ceil(d))
-	wave.Text=string.format("SKY WAVE       %02ds",math.ceil(w))
-	wave.TextColor3=if w<=10 then Color3.fromHex("ff887c") else mint
-	meter.Size=UDim2.fromScale(math.clamp(d/90,0,1),1)
-end)
--- Request initial state only after the event listener and HUD are ready.
-remote:FireServer("sync")
